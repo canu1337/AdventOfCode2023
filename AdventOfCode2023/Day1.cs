@@ -2,12 +2,33 @@
 internal class Day1 : DayBase
 {
     private string[] input;
-    private List<(string numberAsString, int number, string digitAsString)> numbersAsStrings;
+    private readonly List<(string numberAsString, int number, string digitAsString)> numbersAsStrings;
     public override void Init()
     {
+    }
+
+    public override string Part1()
+    {
+        var lockObject = new object();
         input = File.ReadAllLines(Path.Combine(AppContext.BaseDirectory, "Day1.txt"));
-        numbersAsStrings =
-        [
+        var sum = 0;
+        Parallel.ForEach(input, line =>
+        {
+            var res = int.Parse(line.First(char.IsDigit).ToString() + line.Last(char.IsDigit).ToString());
+            lock (lockObject)
+            {
+                sum += res;
+            }
+        });
+        return sum.ToString();
+    }
+
+
+    public override string Part2()
+    {
+        input = File.ReadAllLines(Path.Combine(AppContext.BaseDirectory, "Day1.txt"));
+        var numbersAsStrings = new List<(string numberAsString, int number, string digitAsString)>
+        {
             new("one", 1, "1"),
             new("two", 2, "2"),
             new("three", 3, "3"),
@@ -17,28 +38,7 @@ internal class Day1 : DayBase
             new("seven", 7, "7"),
             new("eight", 8, "8"),
             new("nine", 9, "9")
-        ];
-    }
-
-    public override string Part1()
-    {
-        var sum = 0;
-        Parallel.ForEach(input, line =>
-        {
-            var numbers = line
-                .Where(x => int.TryParse(x.ToString(), out _))
-                .ToList();
-
-
-            var res = int.Parse(numbers.First().ToString() + numbers.Last().ToString());
-            sum += res;
-        });
-        return sum.ToString();
-    }
-
-
-    public override string Part2()
-    {
+        };
         var lockObject = new object();
         var sum = 0;
         Parallel.ForEach(input, line =>
