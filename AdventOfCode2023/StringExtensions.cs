@@ -4,11 +4,11 @@ internal static class StringExtensions
     //stolen from https://stackoverflow.com/a/24016130
     public static IEnumerable<int> AllIndexesOf(this string str, string searchstring)
     {
-        var minIndex = str.IndexOf(searchstring);
+        var minIndex = str.IndexOf(searchstring, StringComparison.Ordinal);
         while (minIndex != -1)
         {
             yield return minIndex;
-            minIndex = str.IndexOf(searchstring, minIndex + 1);
+            minIndex = str.IndexOf(searchstring, minIndex + 1, StringComparison.Ordinal);
         }
     }
 }

@@ -4,7 +4,7 @@ namespace AdventOfCode2023;
 
 internal abstract class DayBase
 {
-    private static readonly long RUNS = 100;
+    private static readonly long RUNS = 1000;
     public void RunAndTime()
     {
         Init();
