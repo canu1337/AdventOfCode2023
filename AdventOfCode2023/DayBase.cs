@@ -8,9 +8,11 @@ internal abstract class DayBase
     public void RunAndTime()
     {
         Init();
+        Console.WriteLine(Part1());
+        Console.WriteLine(Part2());
         var stopWatch = new Stopwatch();
         stopWatch.Start();
-        Console.WriteLine("Day " + GetType().Name);
+        Console.WriteLine(GetType().Name);
         Console.WriteLine($"Part 1 {RUNS} samples");
         for (var i = 0; i < RUNS; i++)
         {
