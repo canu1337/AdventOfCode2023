@@ -23,7 +23,7 @@ internal class Day1 : DayBase
     public override string Part1()
     {
         var sum = 0;
-        foreach (var line in input)
+        Parallel.ForEach(input, line =>
         {
             var numbers = line
                 .Where(x => int.TryParse(x.ToString(), out _))
@@ -32,7 +32,7 @@ internal class Day1 : DayBase
 
             var res = int.Parse(numbers.First().ToString() + numbers.Last().ToString());
             sum += res;
-        }
+        });
         return sum.ToString();
     }
 
@@ -40,7 +40,7 @@ internal class Day1 : DayBase
     public override string Part2()
     {
         var sum = 0;
-        foreach (var line in input)
+        Parallel.ForEach(input, line =>
         {
             var indexes = new List<(int index, int number, string digitAsString)>();
             foreach (var numberAsString in numbersAsStrings)
@@ -60,7 +60,7 @@ internal class Day1 : DayBase
             indexes = [.. indexes.OrderBy(x => x.index)];
             var res = int.Parse(indexes.First().digitAsString + indexes.Last().digitAsString);
             sum += res;
-        }
+        });
         return sum.ToString();
     }
 }
