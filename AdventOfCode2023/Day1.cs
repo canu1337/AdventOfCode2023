@@ -1,9 +1,14 @@
 ﻿namespace AdventOfCode2023;
 internal class Day1 : DayBase
 {
+    private string[] input;
+    public override void Init()
+    {
+        input = File.ReadAllLines(Path.Combine(AppContext.BaseDirectory, "Day1.txt"));
+    }
+
     public override string Part1()
     {
-        var input = File.ReadAllLines("Day1.txt");
         var sum = 0;
         foreach (var line in input)
         {
@@ -33,7 +38,6 @@ internal class Day1 : DayBase
             new ("eight", 8),
             new ("nine", 9)
         };
-        var input = File.ReadAllLines("Day1.txt");
         var sum = 0;
         foreach (var line in input)
         {
@@ -45,7 +49,7 @@ internal class Day1 : DayBase
                 {
                     indexes.Add((i, numberAsString.number));
                 }
-                var index2 = line.AllIndexesOf(numberAsString.numberAsString.ToString());
+                var index2 = line.AllIndexesOf(numberAsString.numberAsString);
                 foreach (var i in index2.Where(x => x != -1))
                 {
                     indexes.Add((i, numberAsString.number));

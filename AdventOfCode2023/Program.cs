@@ -5,7 +5,6 @@ internal class Program
     private static void Main(string[] args)
     {
         var day = new Day1();
-        Console.WriteLine(day.Part1());
-        Console.WriteLine(day.Part2());
+        day.RunAndTime();
     }
 }
