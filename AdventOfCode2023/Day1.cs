@@ -39,6 +39,7 @@ internal class Day1 : DayBase
 
     public override string Part2()
     {
+        var lockObject = new object();
         var sum = 0;
         Parallel.ForEach(input, line =>
         {
@@ -59,7 +60,10 @@ internal class Day1 : DayBase
 
             indexes = [.. indexes.OrderBy(x => x.index)];
             var res = int.Parse(indexes.First().digitAsString + indexes.Last().digitAsString);
-            sum += res;
+            lock (lockObject)
+            {
+                sum += res;
+            }
         });
         return sum.ToString();
     }
