@@ -4,7 +4,7 @@ internal class Program
 {
     private static void Main(string[] args)
     {
-        var day = new Day1();
-        day.RunAndTime();
+        var day = new Day2();
+        day.Part2();
     }
 }
