@@ -35,22 +35,23 @@ internal class Day2 : DayBase
     {
         var games = ParseInput();
         var sum = 0;
-        foreach (var game in games)
+        Parallel.ForEach(games, game =>
         {
             var maxBlue = game.Sets.Select(s => s.Any(c => c.Color == Color.Blue) ? s.Where(c => c.Color == Color.Blue).Max(c => c.Number) : 0).Max();
             var maxRed = game.Sets.Select(s => s.Any(c => c.Color == Color.Red) ? s.Where(c => c.Color == Color.Red).Max(c => c.Number) : 0).Max();
             var maxGreen = game.Sets.Select(s => s.Any(c => c.Color == Color.Green) ? s.Where(c => c.Color == Color.Green).Max(c => c.Number) : 0).Max();
             var power = maxBlue * maxRed * maxGreen;
             sum += power;
-        }
+        });
         return sum.ToString();
     }
 
     private static List<Game> ParseInput()
     {
+        var lockObject = new object();
         var input = File.ReadAllLines(Path.Combine(AppContext.BaseDirectory, "Day2.txt"));
         var games = new List<Game>();
-        foreach (var line in input)
+        Parallel.ForEach(input, line =>
         {
             var columnPos = line.IndexOf(':', StringComparison.Ordinal);
             var id = int.Parse(line[4..columnPos]);
@@ -61,13 +62,16 @@ internal class Day2 : DayBase
                 var parsedCubes = new List<Cube>();
                 foreach (var cube in set.Split(','))
                 {
-                    var words = cube.Split(' ').Where(s => !string.IsNullOrWhiteSpace(s));
-                    parsedCubes.Add(new Cube(int.Parse(words.ElementAt(0)), GetColor(words.ElementAt(1))));
+                    var words = cube.Split(' ').Where(s => !string.IsNullOrWhiteSpace(s)).ToArray();
+                    parsedCubes.Add(new Cube(int.Parse(words[0]), GetColor(words[1])));
                 }
                 parsedSets.Add(parsedCubes);
             }
-            games.Add(new Game(id, parsedSets));
-        }
+            lock (lockObject)
+            {
+                games.Add(new Game(id, parsedSets));
+            }
+        });
 
         return games;
     }
