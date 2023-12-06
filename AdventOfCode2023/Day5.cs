@@ -20,37 +20,51 @@ internal class Day5 : DayBase
         return res.ToString();
     }
 
+    private const long SEGMENT_SIZE = 100000;
     public override string Part2()
     {
+        var lockObject = new object();
         var input = File.ReadAllLines(Path.Combine(AppContext.BaseDirectory, "Day5.txt"));
         var seeds = GetSeedsPart2(input);
         var maps = ParseInput(input);
         var ranges = new List<(long Start, long End)>();
         var res = new List<(long Start, long End)>();
 
-        long lowestLocation = 0;
+        var lowestLocation = -SEGMENT_SIZE;
         var found = false;
+        List<long> results = [];
         while (!found)
         {
-            lowestLocation++;
-            var currentValue = lowestLocation;
-            foreach (var category in _categories.Reverse())
+            lowestLocation += SEGMENT_SIZE;
+            var segments = new List<long>();
+            for (var i = 0; i < SEGMENT_SIZE; i++)
             {
-                var map = maps[category];
-                var range = map.Ranges.FirstOrDefault(r => r.DestinationStart + r.Length > currentValue && r.DestinationStart <= currentValue);
-                if (range is null)
+                segments.Add(lowestLocation + i);
+            }
+            Parallel.ForEach(segments, segment =>
+            {
+                var currentValue = segment;
+                foreach (var category in _categories.Reverse())
                 {
-                    continue;
+                    var map = maps[category];
+                    var range = map.Ranges.FirstOrDefault(r => r.DestinationStart + r.Length > currentValue && r.DestinationStart <= currentValue);
+                    if (range is null)
+                    {
+                        continue;
+                    }
+                    currentValue = range.SourceStart - range.DestinationStart + currentValue;
                 }
-                currentValue = range.SourceStart - range.DestinationStart + currentValue;
-            }
-            if (seeds.Any(s => s.Start <= currentValue && s.End > currentValue))
-            {
-                found = true;
-            }
+                if (seeds.Any(s => s.Start <= currentValue && s.End > currentValue))
+                {
+                    found = true;
+                    lock (lockObject)
+                    {
+                        results.Add(segment);
+                    }
+                }
+            });
         }
-
-        return lowestLocation.ToString();
+        return results.Min().ToString();
     }
 
     private static List<long> GetLocations(IEnumerable<long> seeds, Dictionary<Category, Map> maps)
